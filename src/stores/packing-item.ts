@@ -2,8 +2,12 @@ import { defineStore } from 'pinia'
 import { PINIA_STORE_KEYS } from '@/constants/stores.ts'
 import { computed, ref } from 'vue'
 import type { IPackingItem } from '@/interfaces/checklist.ts'
+import { useErrorStore } from '@/stores/error.ts'
+import { ERROR_LEVEL } from '@/enums/errors.ts'
 
 export const usePackingItemStore = defineStore(PINIA_STORE_KEYS.PACKING_ITEM, () => {
+  const { addError } = useErrorStore()
+
   const items = ref<IPackingItem[]>([])
   const itemList = computed(() => items.value)
   const setItems = (list: IPackingItem[]) => (items.value = list)
@@ -25,7 +29,15 @@ export const usePackingItemStore = defineStore(PINIA_STORE_KEYS.PACKING_ITEM, ()
     const trimmedName = name.trim()
 
     if (!trimmedName) return // don't add without name
-    if (getItemByName(trimmedName)) return // TODO: add error for existing item
+    if (getItemByName(trimmedName)) {
+      addError({
+        message: 'An item with this name already exists',
+        level: ERROR_LEVEL.ERROR,
+        snackbar: true,
+      })
+
+      return
+    }
 
     items.value.push({
       id: items.value.length + 1,
@@ -49,7 +61,16 @@ export const usePackingItemStore = defineStore(PINIA_STORE_KEYS.PACKING_ITEM, ()
    * @return Array of removed items or undefined if index is invalid
    */
   const removeItemByIdx = (idx: number): IPackingItem[] | undefined => {
-    if (idx === -1) return // TODO: add error for not found
+    if (idx === -1) {
+      addError({
+        message: 'Item not found',
+        level: ERROR_LEVEL.ERROR,
+        snackbar: true,
+      })
+
+      return
+    }
+
     return items.value.splice(idx, 1)
   }
 
@@ -72,7 +93,15 @@ export const usePackingItemStore = defineStore(PINIA_STORE_KEYS.PACKING_ITEM, ()
    */
   const editItemById = (id: number, item: Partial<IPackingItem>): IPackingItem | undefined => {
     const old = getItemById(id)
-    if (!old) return // TODO: add error for not found
+    if (!old) {
+      addError({
+        message: 'Item not found',
+        level: ERROR_LEVEL.ERROR,
+        snackbar: true,
+      })
+
+      return
+    }
 
     Object.assign(old, item)
 

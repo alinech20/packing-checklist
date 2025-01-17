@@ -3,8 +3,12 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import type { IChecklist } from '@/interfaces/checklist.ts'
 import { usePackingItemStore } from '@/stores/packing-item.ts'
+import { useErrorStore } from '@/stores/error.ts'
+import { ERROR_LEVEL } from '@/enums/errors.ts'
 
 export const useChecklistStore = defineStore(PINIA_STORE_KEYS.CHECKLIST, () => {
+  const { addError } = useErrorStore()
+
   const checklists = ref<IChecklist[]>([])
   const checklistList = computed(() => checklists.value)
 
@@ -26,7 +30,15 @@ export const useChecklistStore = defineStore(PINIA_STORE_KEYS.CHECKLIST, () => {
     const trimmedName = name.trim()
 
     if (!trimmedName) return // don't add without name
-    if (getChecklistByName(trimmedName)) return // TODO: add error for existing checklist
+    if (getChecklistByName(trimmedName)) {
+      addError({
+        message: 'A checklist with this name already exists',
+        level: ERROR_LEVEL.ERROR,
+        snackbar: true,
+      })
+
+      return
+    }
 
     checklistList.value.push({
       id: checklists.value.length + 1,
@@ -45,7 +57,16 @@ export const useChecklistStore = defineStore(PINIA_STORE_KEYS.CHECKLIST, () => {
    * @return Array of removed checklists or undefined if index is invalid
    */
   const removeChecklistByIdx = (idx: number): IChecklist[] | undefined => {
-    if (idx === -1) return // TODO: add error for not found
+    if (idx === -1) {
+      addError({
+        message: 'Checklist not found',
+        level: ERROR_LEVEL.ERROR,
+        snackbar: true,
+      })
+
+      return
+    }
+
     return checklists.value.splice(idx, 1)
   }
 
@@ -64,7 +85,15 @@ export const useChecklistStore = defineStore(PINIA_STORE_KEYS.CHECKLIST, () => {
     checklist: Partial<IChecklist>,
   ): IChecklist | undefined => {
     const old = getChecklistById(id)
-    if (!old) return // TODO: add error for not found
+    if (!old) {
+      addError({
+        message: 'Checklist not found',
+        level: ERROR_LEVEL.ERROR,
+        snackbar: true,
+      })
+
+      return
+    }
 
     Object.assign(old, checklist)
 
