@@ -3,6 +3,8 @@ import type { IChecklist } from '@/types/checklist.ts'
 import { ref } from 'vue'
 import { useChecklistStore } from '@/stores/checklist.ts'
 import { usePackingItemStore } from '@/stores/packing-item.ts'
+import CustomInput from '@/components/Global/forms/CustomInput.vue'
+import CustomButton from '@/components/Global/forms/CustomButton.vue'
 
 const props = defineProps<{
   checklist: IChecklist
@@ -37,12 +39,7 @@ const saveChecklist = () => {
 }
 
 const removeChecklist = () => {
-  if (props.checklist.id) {
-    removeAllItemsByChecklistId(props.checklist.id)
-    return removeChecklistById(props.checklist.id)
-  }
-
-  removeAllItemsByChecklistTempId(props.checklist.temp_id)
+  if (props.checklist.id) return removeChecklistById(props.checklist.id)
   removeChecklistByTempId(props.checklist.temp_id)
 }
 
@@ -54,37 +51,26 @@ const setActiveChecklist = () => {
 
 <template>
   <article class="checklist-item">
-    <form class="checklist-item__edit-form" @submit.prevent="saveChecklist">
+    <form class="checklist-item__edit-form">
       <section class="checklist-item__actions">
-        <input
-          type="button"
-          class="checklist-item__remove"
-          @click="removeChecklist"
-          value="Remove"
-        />
-        <input
-          type="button"
+        <CustomButton class="checklist-item__remove" @click="removeChecklist" text="Remove" />
+        <CustomButton
           class="checklist-item__edit"
           v-if="!editMode"
           @click="editMode = true"
-          value="Edit name"
+          text="Edit name"
         />
-        <input type="submit" class="checklist-item__save" v-else value="Save" />
-        <input
-          type="button"
-          class="checklist-item__edit-items"
-          @click="setActiveChecklist"
-          value="Edit"
-        />
+        <CustomButton class="checklist-item__save" v-else text="Save" @click="saveChecklist" />
+        <CustomButton class="checklist-item__edit-items" @click="setActiveChecklist" text="Edit" />
       </section>
       <section class="checklist-item__data">
-        <label class="checklist-item__field-label" for="name">Name</label>
-        <input
-          id="name"
+        <CustomInput
+          label="Name"
+          label_for="name"
           class="checklist-item__field"
           type="text"
           :disabled="!editMode"
-          v-model="name"
+          v-model.trim.capitalizeEach="name"
         />
       </section>
     </form>

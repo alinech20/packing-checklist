@@ -130,15 +130,6 @@ export const usePackingItemStore = defineStore(
       return items.value[getItemIdxByTempId(id)]
     }
 
-    const removeAllItemsByChecklistId = (id: number) => {
-      items.value.filter((item) => item.checklist_id !== id)
-    }
-
-    const removeAllItemsByChecklistTempId = (id: string | undefined) => {
-      if (!id) return
-      items.value.filter((item) => item.checklist_temp_id !== id)
-    }
-
     return {
       items,
       itemList,
@@ -149,8 +140,6 @@ export const usePackingItemStore = defineStore(
       removeItemByTempId,
       editItemById,
       editItemByTempId,
-      removeAllItemsByChecklistId,
-      removeAllItemsByChecklistTempId,
     }
   },
   {

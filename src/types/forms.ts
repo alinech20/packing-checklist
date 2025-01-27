@@ -12,6 +12,7 @@ export interface IInputProps {
   min?: number
   max?: number
   step?: number
+  placeholder?: string
 }
 
 export interface IButtonProps {

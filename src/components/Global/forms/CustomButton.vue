@@ -6,7 +6,12 @@ defineProps<IButtonProps>()
 </script>
 
 <template>
-  <button @click="$emit('click')">{{ text }}</button>
+  <button class="custom-button" @click.stop.prevent="$emit('click')">{{ text }}</button>
 </template>
 
-<style scoped lang="css"></style>
+<style lang="css">
+.custom-button {
+  text-transform: uppercase;
+  cursor: pointer;
+}
+</style>

@@ -163,7 +163,10 @@ export const useChecklistStore = defineStore(
       if (!redirect) return
       return id
     }
-    const resetActiveChecklist = () => (activeChecklist.value = {} as IChecklist)
+    const resetActiveChecklist = () => {
+      activeChecklist.value = {} as IChecklist
+      usePackingItemStore().setItems([])
+    }
 
     return {
       checklists,
