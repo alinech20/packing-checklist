@@ -2,6 +2,7 @@
 import type { IChecklist } from '@/types/checklist.ts'
 import { ref } from 'vue'
 import { useChecklistStore } from '@/stores/checklist.ts'
+import { usePackingItemStore } from '@/stores/packing-item.ts'
 
 const props = defineProps<{
   checklist: IChecklist
@@ -17,6 +18,9 @@ const {
   setActiveChecklistById,
   setActiveChecklistByTempId,
 } = useChecklistStore()
+
+const { removeAllItemsByChecklistId, removeAllItemsByChecklistTempId } = usePackingItemStore()
+
 const editMode = ref(false)
 
 const saveChecklist = () => {
@@ -33,7 +37,12 @@ const saveChecklist = () => {
 }
 
 const removeChecklist = () => {
-  if (props.checklist.id) return removeChecklistById(props.checklist.id)
+  if (props.checklist.id) {
+    removeAllItemsByChecklistId(props.checklist.id)
+    return removeChecklistById(props.checklist.id)
+  }
+
+  removeAllItemsByChecklistTempId(props.checklist.temp_id)
   removeChecklistByTempId(props.checklist.temp_id)
 }
 
