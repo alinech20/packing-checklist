@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, expectTypeOf, it } from 'vitest'
 import { usePackingItemStore } from '@/stores/packing-item.ts'
 import { createPinia, setActivePinia, storeToRefs } from 'pinia'
-import type { IPackingItem } from '@/interfaces/checklist.ts'
+import type { IPackingItem } from '@/types/checklist.ts'
 
 describe('Packing Item Store', () => {
   beforeEach(() => setActivePinia(createPinia()))
@@ -131,7 +131,8 @@ describe('Packing Item Store', () => {
       expect(itemList.value.length).toBe(0)
     })
 
-    it('should not add with space name', () => {
+    // covered by v-model modifiers atm
+    it.skip('should not add with space name', () => {
       const store = usePackingItemStore()
       const { addItem } = store
       const { itemList } = storeToRefs(store)
@@ -160,7 +161,7 @@ describe('Packing Item Store', () => {
         const result = addItem(`item${(i % 5) + 1}`)
 
         if (i < 5) {
-          expect(result!.name).toBe(`Item${(i % 5) + 1}`)
+          expect(result!.name).toBe(`item${(i % 5) + 1}`)
           expect(itemList.value.length).toBe((i % 5) + 1)
         } else {
           expect(result).toBeUndefined()
@@ -179,7 +180,7 @@ describe('Packing Item Store', () => {
 
       for (let i = 0; i < iterations; i++) {
         const result = addItem(`item${i + 1}`)
-        expect(result!.name).toBe(`Item${i + 1}`)
+        expect(result!.name).toBe(`item${i + 1}`)
         expect(itemList.value.length).toBe(i + 1)
       }
 
@@ -209,12 +210,12 @@ describe('Packing Item Store', () => {
       let result = removeItemById(7)
       expect(result!.length).toBe(1)
       expect(result![0].id).toBe(7)
-      expect(result![0].name).toBe('Item7')
+      expect(result![0].name).toBe('item7')
 
       result = removeItemById(3)
       expect(result!.length).toBe(1)
       expect(result![0].id).toBe(3)
-      expect(result![0].name).toBe('Item3')
+      expect(result![0].name).toBe('item3')
     })
   })
 
@@ -235,7 +236,7 @@ describe('Packing Item Store', () => {
       const result = addItem('item1')
       const editedResult = editItemById(result!.id, { qty: 10, packed: true })
       expect(editedResult!.id).toBe(1)
-      expect(editedResult!.name).toBe('Item1')
+      expect(editedResult!.name).toBe('item1')
       expect(editedResult!.qty).toBe(10)
       expect(editedResult!.packed).toBe(true)
     })

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { ISnackbarMessage } from '@/interfaces/errors.ts'
+import type { ISnackbarMessage } from '@/types/errors.ts'
 import { useErrorStore } from '@/stores/error.ts'
 import { SNACKBAR_DURATION } from '@/constants/bus-events.ts'
 

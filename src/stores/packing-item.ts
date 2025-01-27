@@ -1,15 +1,13 @@
 import { defineStore } from 'pinia'
 import { PINIA_STORE_KEYS } from '@/constants/stores.ts'
 import { computed, ref } from 'vue'
-import type { IPackingItem } from '@/interfaces/checklist.ts'
+import type { IPackingItem } from '@/types/checklist.ts'
 import { useErrorStore } from '@/stores/error.ts'
 import { ERROR_LEVEL } from '@/enums/errors.ts'
-import { useTextUtils } from '@/composables/useTextUtils.ts'
 
 export const usePackingItemStore = defineStore(
   PINIA_STORE_KEYS.PACKING_ITEM,
   () => {
-    const { capitalizeWord } = useTextUtils()
     const { addError } = useErrorStore()
 
     const items = ref<IPackingItem[]>([])
@@ -18,9 +16,13 @@ export const usePackingItemStore = defineStore(
 
     const getItemById = (id: number): IPackingItem | undefined =>
       items.value.find((item) => item.id === id)
+    const getItemByTempId = (id: string): IPackingItem | undefined =>
+      items.value.find((item) => item.temp_id === id)
     const getItemByName = (name: string): IPackingItem | undefined =>
       items.value.find((item) => item.name === name)
     const getItemIdxById = (id: number): number => items.value.findIndex((item) => item.id === id)
+    const getItemIdxByTempId = (id: string): number =>
+      items.value.findIndex((item) => item.temp_id === id)
 
     /**
      * Adds an item to the list
@@ -30,10 +32,8 @@ export const usePackingItemStore = defineStore(
      * @return Added item in case of success, undefined otherwise
      */
     const addItem = (name: string): IPackingItem | undefined => {
-      const trimmedName = capitalizeWord(name.trim())
-
-      if (!trimmedName) return // don't add without name
-      if (getItemByName(trimmedName)) {
+      if (!name) return // don't add without name
+      if (getItemByName(name)) {
         addError({
           message: 'An item with this name already exists',
           level: ERROR_LEVEL.ERROR,
@@ -44,8 +44,8 @@ export const usePackingItemStore = defineStore(
       }
 
       items.value.push({
-        id: items.value.length + 1,
-        name: trimmedName,
+        temp_id: (Math.random() + 1).toString(36).substring(2),
+        name,
         qty: 0,
         buy_qty: 0,
         prepared_qty: 0,
@@ -86,6 +86,24 @@ export const usePackingItemStore = defineStore(
      * @return Array of removed items or undefined if id doesn't exist
      */
     const removeItemById = (id: number) => removeItemByIdx(getItemIdxById(id))
+    const removeItemByTempId = (id: string | undefined) => {
+      if (!id) return
+      return removeItemByIdx(getItemIdxByTempId(id))
+    }
+
+    const editItem = (old: IPackingItem | undefined, val: Partial<IPackingItem>) => {
+      if (!old) {
+        addError({
+          message: 'Item not found',
+          level: ERROR_LEVEL.ERROR,
+          snackbar: true,
+        })
+
+        return
+      }
+
+      Object.assign(old, val)
+    }
 
     /**
      * Edits an item by id
@@ -97,19 +115,19 @@ export const usePackingItemStore = defineStore(
      */
     const editItemById = (id: number, item: Partial<IPackingItem>): IPackingItem | undefined => {
       const old = getItemById(id)
-      if (!old) {
-        addError({
-          message: 'Item not found',
-          level: ERROR_LEVEL.ERROR,
-          snackbar: true,
-        })
-
-        return
-      }
-
-      Object.assign(old, item)
-
+      editItem(old, item)
       return items.value[getItemIdxById(id)]
+    }
+
+    const editItemByTempId = (
+      id: string | undefined,
+      item: Partial<IPackingItem>,
+    ): IPackingItem | undefined => {
+      if (!id) return
+
+      const old = getItemByTempId(id)
+      editItem(old, item)
+      return items.value[getItemIdxByTempId(id)]
     }
 
     return {
@@ -119,7 +137,9 @@ export const usePackingItemStore = defineStore(
 
       addItem,
       removeItemById,
+      removeItemByTempId,
       editItemById,
+      editItemByTempId,
     }
   },
   {

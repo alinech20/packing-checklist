@@ -17,6 +17,10 @@ describe('Text Utils Composable', () => {
       expect(capitalizeWord(' test')).toEqual(' test')
     })
 
+    it('should keep final space', () => {
+      expect(capitalizeWord('test ')).toEqual('Test ')
+    })
+
     it('should capitalize first letter', () => {
       expect(capitalizeWord('something')).toEqual('Something')
     })

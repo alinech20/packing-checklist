@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IChecklist } from '@/interfaces/checklist.ts'
+import type { IChecklist } from '@/types/checklist.ts'
 import { ref } from 'vue'
 import { useChecklistStore } from '@/stores/checklist.ts'
 
@@ -9,15 +9,37 @@ const props = defineProps<{
 
 const name = ref(props.checklist.name)
 
-const { removeChecklistById, editChecklistById, setActiveChecklistById } = useChecklistStore()
+const {
+  removeChecklistById,
+  removeChecklistByTempId,
+  editChecklistById,
+  editChecklistByTempId,
+  setActiveChecklistById,
+  setActiveChecklistByTempId,
+} = useChecklistStore()
 const editMode = ref(false)
 
-const saveChecklist = (): void => {
-  editChecklistById(props.checklist.id, {
+const saveChecklist = () => {
+  editMode.value = false
+
+  if (props.checklist.id)
+    return editChecklistById(props.checklist.id, {
+      name: name.value,
+    })
+
+  editChecklistByTempId(props.checklist.temp_id, {
     name: name.value,
   })
+}
 
-  editMode.value = false
+const removeChecklist = () => {
+  if (props.checklist.id) return removeChecklistById(props.checklist.id)
+  removeChecklistByTempId(props.checklist.temp_id)
+}
+
+const setActiveChecklist = () => {
+  if (props.checklist.id) return setActiveChecklistById(props.checklist.id)
+  setActiveChecklistByTempId(props.checklist.temp_id)
 }
 </script>
 
@@ -28,7 +50,7 @@ const saveChecklist = (): void => {
         <input
           type="button"
           class="checklist-item__remove"
-          @click="removeChecklistById(checklist.id)"
+          @click="removeChecklist"
           value="Remove"
         />
         <input
@@ -42,7 +64,7 @@ const saveChecklist = (): void => {
         <input
           type="button"
           class="checklist-item__edit-items"
-          @click="setActiveChecklistById(checklist.id)"
+          @click="setActiveChecklist"
           value="Edit"
         />
       </section>

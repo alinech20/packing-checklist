@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { useEventBus } from '@vueuse/core'
 import { BUS_EVENTS } from '@/constants/bus-events.ts'
 import { computed, ref } from 'vue'
-import type { IError, ISnackbarMessage } from '@/interfaces/errors.ts'
+import type { IError, ISnackbarMessage } from '@/types/errors.ts'
 import { ERROR_LEVEL, MESSAGE_COLOR } from '@/enums/errors.ts'
 
 export const useErrorStore = defineStore(PINIA_STORE_KEYS.ERROR, () => {
