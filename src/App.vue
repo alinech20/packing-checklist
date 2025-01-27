@@ -11,9 +11,16 @@ const { getActiveChecklist } = storeToRefs(checklistStore)
 </script>
 
 <template>
-  <!-- TODO: text utils to capitalize item & checklist names -->
-  <h1>Create your packing checklist!</h1>
-  <ChecklistListView v-if="!getActiveChecklist.id" />
-  <ChecklistView v-else />
-  <SnackBar />
+  <main class="content">
+    <ChecklistView v-if="getActiveChecklist.id || getActiveChecklist.temp_id" />
+    <ChecklistListView v-else />
+    <SnackBar />
+  </main>
 </template>
+
+<style lang="css">
+.content {
+  max-width: 960px;
+  margin: 0 auto;
+}
+</style>

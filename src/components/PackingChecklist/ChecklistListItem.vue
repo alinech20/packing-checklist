@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import type { IChecklist } from '@/interfaces/checklist.ts'
+import type { IChecklist } from '@/types/checklist.ts'
 import { ref } from 'vue'
 import { useChecklistStore } from '@/stores/checklist.ts'
+import CustomInput from '@/components/Global/forms/CustomInput.vue'
+import CustomButton from '@/components/Global/forms/CustomButton.vue'
 
 const props = defineProps<{
   checklist: IChecklist
@@ -9,55 +11,76 @@ const props = defineProps<{
 
 const name = ref(props.checklist.name)
 
-const { removeChecklistById, editChecklistById, setActiveChecklistById } = useChecklistStore()
+const {
+  removeChecklistById,
+  removeChecklistByTempId,
+  editChecklistById,
+  editChecklistByTempId,
+  setActiveChecklistById,
+  setActiveChecklistByTempId,
+} = useChecklistStore()
+
 const editMode = ref(false)
 
-const saveChecklist = (): void => {
-  editChecklistById(props.checklist.id, {
+const saveChecklist = () => {
+  editMode.value = false
+
+  if (props.checklist.id)
+    return editChecklistById(props.checklist.id, {
+      name: name.value,
+    })
+
+  editChecklistByTempId(props.checklist.temp_id, {
     name: name.value,
   })
+}
 
-  editMode.value = false
+const removeChecklist = () => {
+  if (props.checklist.id) return removeChecklistById(props.checklist.id)
+  removeChecklistByTempId(props.checklist.temp_id)
+}
+
+const setActiveChecklist = () => {
+  if (props.checklist.id) return setActiveChecklistById(props.checklist.id)
+  setActiveChecklistByTempId(props.checklist.temp_id)
 }
 </script>
 
 <template>
   <article class="checklist-item">
-    <form class="checklist-item__edit-form" @submit.prevent="saveChecklist">
+    <form class="checklist-item__edit-form">
       <section class="checklist-item__actions">
-        <input
-          type="button"
-          class="checklist-item__remove"
-          @click="removeChecklistById(checklist.id)"
-          value="Remove"
-        />
-        <input
-          type="button"
+        <CustomButton class="checklist-item__remove" @click="removeChecklist" text="Remove" />
+        <CustomButton
           class="checklist-item__edit"
           v-if="!editMode"
           @click="editMode = true"
-          value="Edit name"
+          text="Edit name"
         />
-        <input type="submit" class="checklist-item__save" v-else value="Save" />
-        <input
-          type="button"
-          class="checklist-item__edit-items"
-          @click="setActiveChecklistById(checklist.id)"
-          value="Edit"
-        />
+        <CustomButton class="checklist-item__save" v-else text="Save" @click="saveChecklist" />
+        <CustomButton class="checklist-item__edit-items" @click="setActiveChecklist" text="Edit" />
       </section>
       <section class="checklist-item__data">
-        <label class="checklist-item__field-label" for="name">Name</label>
-        <input
-          id="name"
+        <CustomInput
+          label="Name"
+          label_for="name"
           class="checklist-item__field"
           type="text"
           :disabled="!editMode"
-          v-model="name"
+          v-model.trim.capitalizeEach="name"
         />
       </section>
     </form>
   </article>
 </template>
 
-<style scoped lang="css"></style>
+<style lang="css">
+.checklist-item {
+  margin-top: 2rem;
+}
+
+.checklist-item__data,
+.checklist-item__actions {
+  display: inline-block;
+}
+</style>

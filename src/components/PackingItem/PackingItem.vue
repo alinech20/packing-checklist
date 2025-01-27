@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import type { IPackingItem } from '@/interfaces/checklist.ts'
+import type { IPackingItem } from '@/types/checklist.ts'
 import { ref } from 'vue'
 import { usePackingItemStore } from '@/stores/packing-item.ts'
+import ItemFields from '@/components/PackingItem/ItemFields.vue'
+import ItemActions from '@/components/PackingItem/ItemActions.vue'
 
 const props = defineProps<{
   item: IPackingItem
@@ -16,19 +18,33 @@ const prepared = ref(props.item.prepared)
 const packed_qty = ref(props.item.packed_qty)
 const packed = ref(props.item.packed)
 
-const { removeItemById, editItemById } = usePackingItemStore()
+const { removeItemById, removeItemByTempId, editItemById, editItemByTempId } = usePackingItemStore()
 const editMode = ref(false)
 
-const saveItem = (): void => {
-  editItemById(props.item.id, {
+const saveItem = () => {
+  editMode.value = false
+
+  if (props.item.id)
+    return editItemById(props.item.id, {
+      name: name.value,
+      qty: qty.value,
+      buy_qty: buy_qty.value,
+      prepared_qty: prepared_qty.value,
+      packed_qty: packed_qty.value,
+    })
+
+  editItemByTempId(props.item.temp_id, {
     name: name.value,
     qty: qty.value,
     buy_qty: buy_qty.value,
     prepared_qty: prepared_qty.value,
     packed_qty: packed_qty.value,
   })
+}
 
-  editMode.value = false
+const removeItem = () => {
+  if (props.item.id) return removeItemById(props.item.id)
+  removeItemByTempId(props.item.temp_id)
 }
 
 const prepareAll = (val: Event): number => {
@@ -57,106 +73,35 @@ const checkIfAllPacked = (): boolean => {
 </script>
 
 <template>
-  <!-- TODO: extract packing item field component -->
-  <!-- TODO: extract packing item actions component -->
-  <!-- TODO: extract packing item action component (for styling with icons and stuff) -->
   <!-- TODO: design -->
   <article class="packing-item">
-    <form class="packing-item__edit-form" @submit.prevent="saveItem">
-      <section class="packing-item__actions">
-        <input
-          type="button"
-          class="packing-item__remove"
-          @click="removeItemById(item.id)"
-          value="Remove"
-        />
-        <input
-          type="button"
-          class="packing-item__edit"
-          v-if="!editMode"
-          @click="editMode = true"
-          value="Edit"
-        />
-        <input type="submit" class="packing-item__save" v-else value="Save" />
-      </section>
-      <section class="packing-item__data">
-        <label class="packing-item__field-label" for="name">Name</label>
-        <input
-          id="name"
-          class="packing-item__field"
-          type="text"
-          :disabled="!editMode"
-          v-model="name"
-        />
-        <label class="packing-item__field-label" for="qty">Quantity</label>
-        <input
-          id="qty"
-          class="packing-item__field"
-          type="number"
-          min="0"
-          step="1"
-          :max="100"
-          :disabled="!editMode"
-          v-model="qty"
-        />
-        <label class="packing-item__field-label" for="buy_qty">Buy</label>
-        <input
-          id="buy_qty"
-          class="packing-item__field"
-          type="number"
-          min="0"
-          step="1"
-          :max="qty"
-          :disabled="!editMode"
-          v-model="buy_qty"
-        />
-        <label class="packing-item__field-label" for="prepared_qty">Prepared</label>
-        <input
-          id="prepared_qty"
-          class="packing-item__field"
-          type="number"
-          min="0"
-          step="1"
-          :max="qty"
-          :disabled="!editMode"
-          v-model="prepared_qty"
-          @change="checkIfAllPrepared()"
-        />
-        <label class="packing-item__field-label" for="prepared">All Prep</label>
-        <input
-          id="prepared"
-          class="packing-item__field"
-          type="checkbox"
-          v-model="prepared"
-          @change="prepareAll"
-        />
-        <label class="packing-item__field-label" for="packed_qty">Packed</label>
-        <input
-          id="packed_qty"
-          class="packing-item__field"
-          type="number"
-          min="0"
-          step="1"
-          :max="qty"
-          :disabled="!editMode"
-          v-model="packed_qty"
-          @change="checkIfAllPacked"
-        />
-        <label class="packing-item__field-label" for="packed">All Pack</label>
-        <input
-          id="packed"
-          class="packing-item__field"
-          type="checkbox"
-          :value="packed"
-          @change="packAll"
-        />
-      </section>
+    <form class="packing-item__edit-form">
+      <ItemActions
+        :edit-mode="editMode"
+        @remove-click="removeItem"
+        @edit-click="editMode = true"
+        @save-click="saveItem"
+      />
+      <ItemFields
+        :edit-mode="editMode"
+        v-model:name="name"
+        v-model:qty="qty"
+        v-model:buy_qty="buy_qty"
+        v-model:prepared_qty="prepared_qty"
+        v-model:prepared="prepared"
+        v-model:packed_qty="packed_qty"
+        v-model:packed="packed"
+        @change-prepared-qty="checkIfAllPrepared"
+        @change-prepared="prepareAll"
+        @change-packed-qty="checkIfAllPacked"
+        @change-packed="packAll"
+      />
     </form>
   </article>
 </template>
 
 <style lang="css">
-.packing-item__field[type='number'] {
-  width: 40px;
+.packing-item {
+  margin-top: 2rem;
 }
 </style>

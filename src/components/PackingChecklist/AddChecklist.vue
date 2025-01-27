@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useChecklistStore } from '@/stores/checklist.ts'
+import CustomInput from '@/components/Global/forms/CustomInput.vue'
+import CustomButton from '@/components/Global/forms/CustomButton.vue'
 
 const { addChecklist } = useChecklistStore()
 
 const name = ref<string>('')
-const submit = () => {
+const add = () => {
   addChecklist(name.value)
   name.value = ''
 }
@@ -13,11 +15,25 @@ const submit = () => {
 
 <template>
   <section class="add-checklist">
-    <form class="add-checklist__form" @submit.prevent="submit()">
-      <input type="text" class="add-checklist__input" placeholder="Enter Name" v-model="name" />
-      <input type="submit" class="add-checklist__submit" value="Add" />
+    <form class="add-checklist__form">
+      <CustomInput
+        label="Name"
+        label_for="name"
+        type="text"
+        class="add-checklist__input"
+        v-model.trim.capitalizeEach="name"
+      />
+      <CustomButton class="add-checklist__submit" text="Create" @click="add" />
     </form>
   </section>
 </template>
 
-<style lang="css"></style>
+<style lang="css">
+.add-checklist {
+  text-align: center;
+}
+
+.add-checklist__form .add-checklist__input {
+  display: inline-block;
+}
+</style>
