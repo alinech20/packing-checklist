@@ -5,10 +5,12 @@ import type { IChecklist } from '@/interfaces/checklist.ts'
 import { usePackingItemStore } from '@/stores/packing-item.ts'
 import { useErrorStore } from '@/stores/error.ts'
 import { ERROR_LEVEL } from '@/enums/errors.ts'
+import { useTextUtils } from '@/composables/useTextUtils.ts'
 
 export const useChecklistStore = defineStore(
   PINIA_STORE_KEYS.CHECKLIST,
   () => {
+    const { capitalizeWord } = useTextUtils()
     const { addError } = useErrorStore()
 
     const checklists = ref<IChecklist[]>([])
@@ -29,7 +31,7 @@ export const useChecklistStore = defineStore(
      * @return Added checklist in case of success, undefined otherwise
      */
     const addChecklist = (name: string): IChecklist | undefined => {
-      const trimmedName = name.trim()
+      const trimmedName = capitalizeWord(name.trim())
 
       if (!trimmedName) return // don't add without name
       if (getChecklistByName(trimmedName)) {

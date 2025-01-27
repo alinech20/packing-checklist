@@ -4,10 +4,12 @@ import { computed, ref } from 'vue'
 import type { IPackingItem } from '@/interfaces/checklist.ts'
 import { useErrorStore } from '@/stores/error.ts'
 import { ERROR_LEVEL } from '@/enums/errors.ts'
+import { useTextUtils } from '@/composables/useTextUtils.ts'
 
 export const usePackingItemStore = defineStore(
   PINIA_STORE_KEYS.PACKING_ITEM,
   () => {
+    const { capitalizeWord } = useTextUtils()
     const { addError } = useErrorStore()
 
     const items = ref<IPackingItem[]>([])
@@ -28,7 +30,7 @@ export const usePackingItemStore = defineStore(
      * @return Added item in case of success, undefined otherwise
      */
     const addItem = (name: string): IPackingItem | undefined => {
-      const trimmedName = name.trim()
+      const trimmedName = capitalizeWord(name.trim())
 
       if (!trimmedName) return // don't add without name
       if (getItemByName(trimmedName)) {
