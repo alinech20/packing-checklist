@@ -91,4 +91,16 @@ const packed = defineModel<boolean>('packed')
   </section>
 </template>
 
-<style scoped lang="css"></style>
+<style lang="css">
+.packing-item__data {
+  display: inline-block;
+}
+
+.packing-item__field {
+  display: inline-block;
+}
+
+.packing-item__field input[type='number'] {
+  width: 40px;
+}
+</style>

@@ -2,7 +2,6 @@
 import type { IChecklist } from '@/types/checklist.ts'
 import { ref } from 'vue'
 import { useChecklistStore } from '@/stores/checklist.ts'
-import { usePackingItemStore } from '@/stores/packing-item.ts'
 import CustomInput from '@/components/Global/forms/CustomInput.vue'
 import CustomButton from '@/components/Global/forms/CustomButton.vue'
 
@@ -20,8 +19,6 @@ const {
   setActiveChecklistById,
   setActiveChecklistByTempId,
 } = useChecklistStore()
-
-const { removeAllItemsByChecklistId, removeAllItemsByChecklistTempId } = usePackingItemStore()
 
 const editMode = ref(false)
 
@@ -77,4 +74,13 @@ const setActiveChecklist = () => {
   </article>
 </template>
 
-<style scoped lang="css"></style>
+<style lang="css">
+.checklist-item {
+  margin-top: 2rem;
+}
+
+.checklist-item__data,
+.checklist-item__actions {
+  display: inline-block;
+}
+</style>

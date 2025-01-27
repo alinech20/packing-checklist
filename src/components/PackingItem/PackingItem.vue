@@ -101,7 +101,7 @@ const checkIfAllPacked = (): boolean => {
 </template>
 
 <style lang="css">
-.packing-item__field input[type='number'] {
-  width: 40px;
+.packing-item {
+  margin-top: 2rem;
 }
 </style>

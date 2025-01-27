@@ -21,10 +21,9 @@ const add = () => {
         label_for="name"
         type="text"
         class="add-checklist__input"
-        placeholder="Enter Name"
         v-model.trim.capitalizeEach="name"
       />
-      <CustomButton class="add-checklist__submit" text="Add" @click="add" />
+      <CustomButton class="add-checklist__submit" text="Create" @click="add" />
     </form>
   </section>
 </template>
@@ -32,5 +31,9 @@ const add = () => {
 <style lang="css">
 .add-checklist {
   text-align: center;
+}
+
+.add-checklist__form .add-checklist__input {
+  display: inline-block;
 }
 </style>

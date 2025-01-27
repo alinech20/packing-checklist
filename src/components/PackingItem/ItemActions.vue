@@ -20,4 +20,8 @@ defineEmits(['removeClick', 'editClick', 'saveClick'])
   </section>
 </template>
 
-<style scoped lang="css"></style>
+<style lang="css">
+.packing-item__actions {
+  display: inline-block;
+}
+</style>
