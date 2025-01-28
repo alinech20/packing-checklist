@@ -34,4 +34,23 @@ const [model, modifiers] = defineModel({
   </article>
 </template>
 
-<style lang="css"></style>
+<style lang="css">
+.custom-input__label {
+  margin-right: 1em;
+}
+
+.custom-input__input {
+  border-radius: 2px;
+  font-size: 0.875em;
+  padding: 0.25em 0.5em;
+  border: 1px solid black;
+}
+
+.custom-input__input:focus {
+  outline: none;
+}
+
+.custom-input__input[disabled] {
+  border: none;
+}
+</style>

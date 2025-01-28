@@ -21,14 +21,12 @@ const packed = defineModel<boolean>('packed')
     <CustomInput
       class="packing-item__field"
       type="text"
-      label="Name"
-      label_for="name"
       :disabled="!editMode"
       v-model.capitalize.trim="name"
     />
     <CustomInput
       label_for="qty"
-      label="Quantity"
+      label="Qty"
       class="packing-item__field"
       type="number"
       :min="0"
@@ -50,7 +48,7 @@ const packed = defineModel<boolean>('packed')
     />
     <CustomInput
       label_for="prepared_qty"
-      label="Prepared"
+      label="Prepped"
       class="packing-item__field"
       type="number"
       :min="0"

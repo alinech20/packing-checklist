@@ -1,5 +1,3 @@
-import type { Component } from 'vue'
-
 // to add types as needed
 type TInputType = 'text' | 'number' | 'checkbox'
 
@@ -17,5 +15,6 @@ export interface IInputProps {
 
 export interface IButtonProps {
   text?: string
-  icon?: Component
+  icon?: boolean
+  type?: 'button' | 'submit'
 }

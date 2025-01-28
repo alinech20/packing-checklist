@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useChecklistStore } from '@/stores/checklist.ts'
 import CustomInput from '@/components/Global/forms/CustomInput.vue'
 import CustomButton from '@/components/Global/forms/CustomButton.vue'
+import { Icon } from '@iconify/vue'
 
 const { addChecklist } = useChecklistStore()
 
@@ -17,13 +18,15 @@ const add = () => {
   <section class="add-checklist">
     <form class="add-checklist__form">
       <CustomInput
-        label="Name"
+        label="Title"
         label_for="name"
         type="text"
         class="add-checklist__input"
         v-model.trim.capitalizeEach="name"
       />
-      <CustomButton class="add-checklist__submit" text="Create" @click="add" />
+      <CustomButton class="add-checklist__submit" type="submit" @click="add" icon>
+        <template #icon><Icon icon="pixelarticons:plus" /></template>
+      </CustomButton>
     </form>
   </section>
 </template>
@@ -33,7 +36,19 @@ const add = () => {
   text-align: center;
 }
 
+.add-checklist__form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .add-checklist__form .add-checklist__input {
   display: inline-block;
+}
+
+.add-checklist__form .add-checklist__submit {
+  color: white;
+  background-color: darkgreen;
+  margin-left: 0.25em;
 }
 </style>

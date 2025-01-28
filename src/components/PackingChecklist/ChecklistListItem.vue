@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import { useChecklistStore } from '@/stores/checklist.ts'
 import CustomInput from '@/components/Global/forms/CustomInput.vue'
 import CustomButton from '@/components/Global/forms/CustomButton.vue'
+import { Icon } from '@iconify/vue'
 
 const props = defineProps<{
   checklist: IChecklist
@@ -50,20 +51,21 @@ const setActiveChecklist = () => {
   <article class="checklist-item">
     <form class="checklist-item__edit-form">
       <section class="checklist-item__actions">
-        <CustomButton class="checklist-item__remove" @click="removeChecklist" text="Remove" />
-        <CustomButton
-          class="checklist-item__edit"
-          v-if="!editMode"
-          @click="editMode = true"
-          text="Edit name"
-        />
-        <CustomButton class="checklist-item__save" v-else text="Save" @click="saveChecklist" />
-        <CustomButton class="checklist-item__edit-items" @click="setActiveChecklist" text="Edit" />
+        <CustomButton class="checklist-item__remove" @click="removeChecklist" icon>
+          <template #icon><Icon icon="pixelarticons:close" /></template>
+        </CustomButton>
+        <CustomButton class="checklist-item__edit-items" @click="setActiveChecklist" icon>
+          <template #icon><Icon icon="pixelarticons:bulletlist" /></template>
+        </CustomButton>
+        <CustomButton class="checklist-item__edit" v-if="!editMode" @click="editMode = true" icon>
+          <template #icon><Icon icon="pixelarticons:edit" /></template>
+        </CustomButton>
+        <CustomButton class="checklist-item__save" type="submit" v-else @click="saveChecklist" icon>
+          <template #icon><Icon icon="pixelarticons:save" /></template>
+        </CustomButton>
       </section>
       <section class="checklist-item__data">
         <CustomInput
-          label="Name"
-          label_for="name"
           class="checklist-item__field"
           type="text"
           :disabled="!editMode"
@@ -79,8 +81,41 @@ const setActiveChecklist = () => {
   margin-top: 2rem;
 }
 
+.checklist-item__edit-form {
+  display: flex;
+  align-items: center;
+}
+
 .checklist-item__data,
 .checklist-item__actions {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+}
+
+.checklist-item__actions .custom-button {
+  margin-right: 0.25rem;
+}
+
+.checklist-item__remove,
+.checklist-item__edit,
+.checklist-item__edit-items,
+.checklist-item__save {
+  color: white;
+}
+
+.checklist-item__remove {
+  background-color: darkred;
+}
+
+.checklist-item__edit {
+  background-color: darkblue;
+}
+
+.checklist-item__edit-items {
+  background-color: darkorange;
+}
+
+.checklist-item__save {
+  background-color: darkgreen;
 }
 </style>

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { usePackingItemStore } from '@/stores/packing-item.ts'
 import CustomButton from '@/components/Global/forms/CustomButton.vue'
 import CustomInput from '@/components/Global/forms/CustomInput.vue'
+import { Icon } from '@iconify/vue'
 
 const { addItem } = usePackingItemStore()
 
@@ -24,7 +25,9 @@ const add = () => {
         label_for="name"
         v-model.trim.capitalize="name"
       />
-      <CustomButton class="add-item__submit" text="Add" @click="add" />
+      <CustomButton class="add-item__submit" type="submit" @click="add" icon>
+        <template #icon><Icon icon="pixelarticons:plus" /></template>
+      </CustomButton>
     </form>
   </section>
 </template>
@@ -34,7 +37,19 @@ const add = () => {
   text-align: center;
 }
 
+.add-item__form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .add-item__input {
   display: inline-block;
+}
+
+.add-item__submit {
+  color: white;
+  background-color: darkgreen;
+  margin-left: 0.5em;
 }
 </style>

@@ -101,7 +101,9 @@ const checkIfAllPacked = (): boolean => {
 </template>
 
 <style lang="css">
-.packing-item {
+.packing-item__edit-form {
+  display: flex;
+  align-items: center;
   margin-top: 2rem;
 }
 </style>
