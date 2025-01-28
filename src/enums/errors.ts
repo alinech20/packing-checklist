@@ -4,14 +4,15 @@ export enum ERROR_LEVEL {
   WARNING,
   INFO,
   LOG,
-  VERBOSE
+  VERBOSE,
 }
 
 export enum MESSAGE_COLOR {
-  ERROR = 'red',
-  INFO = 'orange',
-  VERBOSE = 'grey',
-  SUCCESS = 'green',
+  ERROR = 'darkred',
+  INFO = 'darkblue',
+  WARNING = 'darkorange',
+  VERBOSE = 'darkslategray',
+  SUCCESS = 'darkgreen',
 }
 
 export enum LOGGER_LEVEL {
@@ -20,5 +21,5 @@ export enum LOGGER_LEVEL {
   WARNING,
   INFO,
   LOG,
-  VERBOSE
+  VERBOSE,
 }

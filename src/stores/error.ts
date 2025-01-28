@@ -10,13 +10,15 @@ export const useErrorStore = defineStore(PINIA_STORE_KEYS.ERROR, () => {
   const snackbar = useEventBus<ISnackbarMessage>(BUS_EVENTS.SNACKBAR)
   const displayError = (e: IError) => {
     const color =
-      e.level > ERROR_LEVEL.ERROR
+      e.level <= ERROR_LEVEL.ERROR
         ? MESSAGE_COLOR.ERROR
-        : e.level > ERROR_LEVEL.INFO
-          ? MESSAGE_COLOR.INFO
-          : e.level > ERROR_LEVEL.VERBOSE
-            ? MESSAGE_COLOR.VERBOSE
-            : MESSAGE_COLOR.SUCCESS
+        : e.level <= ERROR_LEVEL.WARNING
+          ? MESSAGE_COLOR.WARNING
+          : e.level <= ERROR_LEVEL.INFO
+            ? MESSAGE_COLOR.INFO
+            : e.level <= ERROR_LEVEL.VERBOSE
+              ? MESSAGE_COLOR.VERBOSE
+              : MESSAGE_COLOR.SUCCESS
 
     snackbar.emit({
       ...e,

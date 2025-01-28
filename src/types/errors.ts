@@ -9,6 +9,8 @@ export interface IError {
   time_overwrite?: number
 }
 
+type TSnackbarColor = 'darkgreen' | 'darkred' | 'darkblue' | 'darkorange' | 'darkslategray'
+
 export interface ISnackbarMessage extends IError {
-  color?: string
+  color?: TSnackbarColor
 }

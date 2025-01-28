@@ -78,7 +78,7 @@ const setActiveChecklist = () => {
 
 <style lang="css">
 .checklist-item {
-  margin-top: 2rem;
+  margin-top: 0.5rem;
 }
 
 .checklist-item__edit-form {

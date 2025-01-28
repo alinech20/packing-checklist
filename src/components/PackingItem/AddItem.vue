@@ -15,7 +15,6 @@ const add = () => {
 </script>
 
 <template>
-  <!-- TODO: design -->
   <section class="add-item">
     <form class="add-item__form">
       <CustomInput

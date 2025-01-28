@@ -19,4 +19,8 @@ const { checklistList } = storeToRefs(checklistStore)
   </section>
 </template>
 
-<style scoped lang="css"></style>
+<style lang="css">
+.checklist-section {
+  margin-top: 2rem;
+}
+</style>

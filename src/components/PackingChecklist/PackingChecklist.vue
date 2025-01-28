@@ -15,4 +15,8 @@ const { itemList } = storeToRefs(packingItemStore)
   </section>
 </template>
 
-<style scoped></style>
+<style scoped>
+.checklist-section {
+  margin-top: 2rem;
+}
+</style>
